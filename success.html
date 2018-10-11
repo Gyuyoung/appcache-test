@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html manifest="success.appcache">
+	<head>
+		<title>AppCache smaller than 5MB</title>
+		<style>
+			.log {
+				color: #101010;
+			}
+			.error {
+				color: #E01010;
+			}
+			.info {
+				color: #1010E0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='log'></div>
+		<script type="text/javascript">
+			var divlog = function(msg, type) {
+				let entry = document.createElement('div');
+				entry.classList.add(type || 'log');
+				entry.innerHTML = msg;
+				let log = document.getElementById('log');
+				log.appendChild(entry);
+			};
+			
+			switch(window.applicationCache.status) {
+				case 0: //UNCACHED
+					divlog('uncached');
+					break;
+				case 2: //CHECKING
+				case 3: //DOWNLOADING
+					window.applicationCache.onchecking 		= (e) => {
+						divlog('checking');
+					};
+					window.applicationCache.onerror 		= (e) => {
+						divlog('error');
+						divlog(e.message, 'error');
+					};
+					window.applicationCache.onnoupdate	 	= (e) => {
+						divlog('noupdate');
+					};
+					window.applicationCache.ondownloading 	= (e) => {
+						divlog('downloading');
+					};
+					window.applicationCache.onprogress 		= (e) => {
+						divlog('progress');
+					};
+					window.applicationCache.onupdateready 	= (e) => {
+						divlog('updateready');
+					};
+					window.applicationCache.oncached 		= (e) => {
+						divlog('cached');
+					};
+					window.applicationCache.onobsolete 		= (e) => {
+						divlog('obsolete');
+					};
+					break;
+				case 5: //OBSOLETE
+					divlog("Attenzione...manifest applicationCache mancante!", error);
+					break;
+					
+				case 1: //IDLE (cache pronta)
+					divlog('---> IDLE cache pronta <---', 'info');
+					break;
+					
+				case 4: //UPDATEREADY (cache aggiornata, pronta da swappare)
+					console.info('---> updateready <---');
+					break;
+			}
+		</script>
+	</body>
+</html>
